@@ -1,84 +1,89 @@
 // Read samples.json
 const url = "../samples.json";
 
-function barChart () {
+// function to build all charts
+function buildAllCharts (id) {
 
-  d3.json(url).then((data) => {
-    console.log(data);
+  d3.json(url).then((raw) => {
+    console.log(raw);
     
-    // Extract the sample_values from the samples data
-    var sampleValues = data.samples.map(x=>x.sample_values.slice(0,10));
-    console.log(sampleValues);
-    // var sampleValues1 = sampleValues[0];
+    data = raw.samples.filter(d => d.id === id);
+    metaData = raw.metadata.filter(d => d.id == id);
 
-    var otuIds = data.samples.map(x=>x.otu_ids.slice(0,10));
+    // Extract the sample_values from the samples data
+    var sampleValues = data.map(x=>x.sample_values.slice(0,10))[0];
+    console.log(sampleValues);
+
+
+    var otuIds = data.map(x=>x.otu_ids.slice(0,10))[0];
     console.log(otuIds);
-    // var otuIds1 = otuIds[0];
-    var ylabels = []
+
+    var yLabels = []
     for (let i = 0; i < otuIds.length; i++) {
       otuString = otuIds[i].toString()
-      ylabels.push(`OTU ${otuString}`)
+      yLabels.push(`OTU ${otuString}`)
     }
 
-    var otuLabels = data.samples.map(x=>x.otu_labels.slice(0,10));
+    var otuLabels = data.map(x=>x.otu_labels.slice(0,10))[0];
     console.log(otuLabels);
-    // var otuLabels1 = otuLabels[0];
 
-    trace = {
-      x: sampleValues1,
-      y: ylabels,
-      type: "bar",
-      text: otuLabels1,
-      orientation: 'h'
-    };
-    var layout = {
-      yaxis: {
-        autorange: 'reversed'
-      },
-      xaxis: {
-        tick0: 0,
-        dtick: 50
-      }
+    barCharts(sampleValues, yLabels, otuLabels);
+    metaTable(metaData)
+  })
+}
+
+// function to build bar charts
+function barCharts (xValue, yValue, textValue) {
+  trace = {
+    x: xValue,
+    y: yValue,
+    type: "bar",
+    text: textValue,
+    orientation: 'h'
+  };
+  var layout = {
+    yaxis: {
+      autorange: 'reversed'
+    },
+    xaxis: {
+      tick0: 0,
+      dtick: 50
     }
+  }
 
-    var data = [trace]
-    Plotly.newPlot('bar', data, layout);
-  });
+  var data = [trace]
+  Plotly.newPlot('bar', data, layout);
+}
 
-};
+function metaTable (data) {
+  var x = d3.select("#sample-metadata");
+  x.html("");
+  data.forEach(d => {
+    Object.entries(d).forEach(([k, v]) => {
+      var row = x.append("div")
+      row.text(`${k}: ${v}`)
+    })
+  })
+}
   
 
+function optionChanged (id) {
+  buildAllCharts(id);
+
+}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-  // Initialize x and y arrays
-//   if (dataset === 'dataset1') {
-//     var x = [1, 2, 3, 4, 5];
-//     var y = [1, 2, 4, 8, 16];
-//     type = "line";
-//     Plotly.restyle("plot", "x", [x]);
-//     Plotly.restyle("plot", "y", [y]);
-//     Plotly.restyle("plot", "type", type);
-//   }
-
-//   else if (dataset === 'dataset2') {
-//     var x = [10, 20, 30, 40, 50];
-//     var y = [1, 10, 100, 1000, 10000];
-//     type = "pie";
-//     Plotly.restyle("plot", "labels", [x]);
-//     Plotly.restyle("plot", "values", [y]);
-//     Plotly.restyle("plot", "type", type);
-//   }
-
-  // Note the extra brackets around 'x' and 'y'
+// function to initialize 
+function init() {
+    // create the drop down
+    var html = ""
+    d3.json(url).then(function(d){
+       d.names.map(function(each){
+           html += "<option value = "+each+" > "+each+"</option>"
+       })
+        // console.log(html);
+        document.getElementById("selDataset").innerHTML = html;
+        optionChanged(d.names[0]);
+    })
+  }
+init()
