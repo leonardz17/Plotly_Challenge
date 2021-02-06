@@ -1,5 +1,5 @@
 // Read samples.json
-const url = "https://leonardz17.github.io/Plotly_Challenge/samples.json";
+const url = "/samples.json";
 
 // function to initialize and set ID dropdown
 function init() {
