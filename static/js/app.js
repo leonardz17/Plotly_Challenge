@@ -1,6 +1,24 @@
 // Read samples.json
 const url = "../samples.json";
 
+// function to initialize and set ID dropdown
+function init() {
+  d3.json(url).then(x => {
+    x.names.map(each => {
+      var dropDown = d3.select("#selDataset");
+      var idDrop = dropDown.append("option");
+      idDrop.attr("value", each).text(`${each}`);
+      console.log(dropDown);
+    })
+    optionChanged(x.names[0]);
+  })
+}
+
+// On id change handler
+function optionChanged (id) {
+  buildAllCharts(id);
+}
+
 // function to build all charts
 function buildAllCharts (id) {
 
@@ -72,6 +90,7 @@ function barCharts (xValue, yValue, textValue) {
   Plotly.newPlot('bar', data, layout);
 }
 
+// Build demographic table
 function metaTable (data) {
   var x = d3.select("#sample-metadata");
   x.html("");
@@ -83,6 +102,7 @@ function metaTable (data) {
   })
 }
 
+// Build bubble chart
 function bubbleChart (xValue, yValue, textValue, markerSize, markerColor) {
   var trace = {
     x: xValue,
@@ -103,13 +123,14 @@ function bubbleChart (xValue, yValue, textValue, markerSize, markerColor) {
     },
     showlegend: false,
     height:500,
-    width: 1000,
+    width: 1100,
   };
 
   Plotly.newPlot("bubble", data, layout);
 
 }
 
+// Build gauge chart
 function gaugeChart (gValue) {
   var data = [
     {
@@ -119,17 +140,17 @@ function gaugeChart (gValue) {
       title: { text: "Scrubs per Week", font: { size: 14 } },
       gauge: {
         axis: { range: [0, 9], tickwidth: 1, tickcolor: "black" },
-        bar: { color: "brown" },
+        bar: { color: "#2980B9" },
         bgcolor: "white",
         borderwidth: 2,
         bordercolor: "black",
         steps: [
-          { range: [0, 1], color: "#EAFAF1" },
-          { range: [1, 2], color: "#D5F5E3" },
-          { range: [2, 3], color: "#ABEBC6" },
-          { range: [3, 4], color: "#82E0AA" },
-          { range: [4, 5], color: "#58D68D" },
-          { range: [5, 6], color: "#2ECC71" },
+          { range: [0, 1], color: "#CB4335" },
+          { range: [1, 2], color: "#E74C3C" },
+          { range: [2, 3], color: "#EC7063 " },
+          { range: [3, 4], color: "#F1C40F" },
+          { range: [4, 5], color: "#F4D03F" },
+          { range: [5, 6], color: "#F7DC6F" },
           { range: [6, 7], color: "#28B463" },
           { range: [7, 8], color: "#239B56" },
           { range: [8, 9], color: "#1D8348" }
@@ -148,23 +169,4 @@ function gaugeChart (gValue) {
   Plotly.newPlot('gauge', data, layout);
 }
 
-function optionChanged (id) {
-  buildAllCharts(id);
-
-}
-
-
-// function to initialize 
-function init() {
-    // create the drop down
-    var html = ""
-    d3.json(url).then(function(d){
-       d.names.map(function(each){
-           html += "<option value = "+each+" > "+each+"</option>"
-       })
-        // console.log(html);
-        document.getElementById("selDataset").innerHTML = html;
-        optionChanged(d.names[0]);
-    })
-  }
 init()
