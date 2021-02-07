@@ -9,7 +9,7 @@ The dataset reveals that a small handful of microbial species (also called opera
 * Plotly
 * Javascript
 
-## Sneak Peak
+## Data Sneak Peak
 
 ![Alt text](sample-image.png)
  
