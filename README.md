@@ -11,5 +11,5 @@ The dataset reveals that a small handful of microbial species (also called opera
 
 ## Data Sneak Peak
 
-![Alt text](sample-image.png)
+![Alt text](sample-image1.png)
  
