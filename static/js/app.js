@@ -25,8 +25,10 @@ function buildAllCharts (id) {
   d3.json(url).then((raw) => {
     console.log(raw);
     
-    data = raw.samples.filter(d => d.id === id);
-    metaData = raw.metadata.filter(d => d.id == id);
+    var data = raw.samples.filter(d => d.id === id);
+    var metaData = raw.metadata.filter(d => d.id == id);
+    console.log(data);
+    console.log(metaData);
 
     // Extract the sliced sample_values from the samples data
     var sampleValues = data.map(x=>x.sample_values.slice(0,10))[0];
@@ -111,7 +113,8 @@ function bubbleChart (xValue, yValue, textValue, markerSize, markerColor) {
     mode: "markers",  
     marker: {
       size: markerSize,
-      color: markerColor
+      color: markerColor,
+      colorscale: "Rainbow"
     }
   };
 
